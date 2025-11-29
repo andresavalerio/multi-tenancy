@@ -1,0 +1,88 @@
+* Row Level Security
+
+This is an example of an application implementing RLS on Postgres.
+
+*** Requirements
+- Docker
+- Docker Compose
+- Python
+- DB Mate
+
+*** Context
+
+Companies (Tenant-level data isolation)
+Machines
+Employees
+UserGroups (employees)
+Softwares
+
+
+*** Environment
+
+Create a ~.env~ file with the following values:
+
+#+begin_src shell
+DATABASE_URL="postgresql://admin:admin@0.0.0.0:5432/postgres?sslmode=disable"
+DBMATE_STRICT=true
+DBMATE_WAIT_TIMEOUT=60s
+#+end_src
+
+
+*** Containers
+
+Currently PG container and pgAdmin.
+
+#+begin_src shell
+docker compose -f ./docker-compose.yaml up -d
+#+end_src
+
+To clean the database volume:
+#+begin_src shell
+docker rm -f <database-container-id>
+docker volume rm cache-api_postgres
+docker volume rm cache-api_dragonflydata
+docker volume prune
+#+end_src
+
+*** API
+
+Setup python environment, apply migrations and starts API server.
+
+#+begin_src shell
+nix-shell --pure shell.nix  # if nix user
+source setup.sh
+#+end_src
+
+*** Exploring the project
+**** Exploring the API
+- Open http://127.0.0.1:8000/docs to see Swagger
+- You'll see two documentations, admin (God mode) and public
+
+***** Admin API
+With this API, you have full access to create and delete all tenants. It's a super user mode.
+
+- Start by running ~GET /tenants/~ to see all current tenants available
+- Run ~POST /tenants/~
+    - ~company_name~ must be unique
+    - Run ~GET /tenants/~ again and verify if the tenant was really created
+- Run ~DELETE /tenants/~ with the company you've previously created
+    - Run ~GET /tenants/~ again and verify if the tenant was really deleted
+
+***** Public API
+This API is meant to be accessed by the final client inside a tenant.
+
+- Start by running ~GET /machines/~. You must have a tenant ID to access it. You may use the Admin API to support you on this part.
+- Run ~POST /machines/~. Notice that you also need a tenant ID to create it.
+    - The DBMS will verify if the macadd is unique and will forbid the creation if it isn't independently of the tenant.
+
+**** Exploring the DB
+- Open http://localhost:5050/
+- Log in using the default user set on docker compose:
+    - Email: admin@gmail.com
+    - Password: admin
+- Click in "Add New Server"
+- Visualize the tables and their relations
+- You can also run queries within the ~pgadmin~ interface
+
+**** Exploring the codebase
+
