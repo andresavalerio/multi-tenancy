@@ -1,0 +1,5 @@
+fastapi[standard]
+asyncpg==0.30.0
+redis==5.0.8
+hiredis==3.3.0
+pytest==8.3.2
