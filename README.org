@@ -81,6 +81,8 @@ This API is meant to be accessed by the final client inside a tenant.
     - Email: admin@gmail.com
     - Password: admin
 - Click in "Add New Server"
+    - On "Connection", ensure that hostname is "postgres", usermane and pasword are "admin"
+- Right click on postgres DB and chose "ERD for Database"
 - Visualize the tables and their relations
 - You can also run queries within the ~pgadmin~ interface
 
