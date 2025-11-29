@@ -2,6 +2,9 @@
 
 This is an example of an application implementing RLS on Postgres.
 
+Video: https://youtu.be/PterepV3SoA
+Article: https://open.substack.com/pub/andresavalerio/p/arquitetando-apis-multi-tenant-modernas
+
 *** Requirements
 - Docker
 - Docker Compose
